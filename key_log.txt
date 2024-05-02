@@ -1,0 +1,36 @@
+[LOG [1714646907.685036]]: KeyLogger Active.
+[1714646907.6850471]
+[LOG]: System Info Logged
+[LOG]: ClipBoard Info Logged
+[LOG [1714647034.324126]]: KeyLogger Active.
+[1714647034.324139]
+[LOG]: System Info Logged
+[LOG]: ClipBoard Info Logged
+[LOG [1714647343.709912]]: KeyLogger Active.
+[1714647343.7099168]
+[LOG]: System Info Logged
+[LOG]: ClipBoard Info Logged
+[LOG [1714647352.08613]]: KeyLogger Active.
+[1714647352.086134]
+[LOG]: System Info Logged
+[LOG]: ClipBoard Info Logged
+[LOG [1714647561.396331]]: KeyLogger Active.
+[1714647561.3963351]
+[LOG]: System Info Logged
+[LOG]: ClipBoard Info Logged
+[LOG [1714647572.142665]]: KeyLogger Active.
+[1714647572.142669]
+[LOG]: System Info Logged
+[LOG]: ClipBoard Info Logged
+[LOG [1714647749.536971]]: KeyLogger Active.
+[1714647749.5369759]
+[LOG]: System Info Logged
+[LOG]: ClipBoard Info Logged
+[LOG [1714647990.183831]]: KeyLogger Active.
+[1714647990.1838348]
+[LOG]: System Info Logged
+[LOG]: ClipBoard Info Logged
+[LOG [1714660101.731512]]: KeyLogger Active.
+[1714660101.731516]
+[LOG]: System Info Logged
+[LOG]: ClipBoard Info Logged
